@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,8 +22,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Store::macro('addDataLayer', function ($data) {
+            $this->push('data_layer', $data);
+
+            return $this;
+        });
+
         RedirectResponse::macro('addDataLayer', function ($data) {
-            Session::push('data_layer', $data);
+            Session::addDataLayer($data);
 
             return $this;
         });
